@@ -13,8 +13,8 @@ console.log('checkNumber: ', checkNumber(9))
 // console.log(require.main) // require 객체 정보 출력
 
 //3. 순환참조 문제
-// const insideDep1 = require('./01_commonJS/dep1')
-// const insideDep2 = require('./01_commonJS/dep2')
+// const insideDep1 = require('./dep1')
+// const insideDep2 = require('./dep2')
 
 // insideDep1()
 // insideDep2()
