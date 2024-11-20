@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 // 미들웨어 2
 app.use((req, res, next) => {
    console.log('미들웨어 2 실행')
-   next() // 다음 미들웨어로 이동
+   next() // 다음 미들웨어(app.get('/', ()=> {..}))로 이동
 })
 
 app.get('/', (req, res) => {
