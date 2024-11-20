@@ -10,8 +10,8 @@ app.use(cookieParser('my-secret-key'))
 
 // 쿠키 설정
 app.get('/set-cookie', (req, res) => {
-   res.cookie('age', '25', { signed: false, maxAge: 3600000 }) // 1시간 동안 유효(서명 보안 X)
-   res.cookie('user', 'Alice', { signed: true, maxAge: 3600000 }) // 1시간 동안 유효(서명 보안 됨)
+   res.cookie('age', '25', { signed: false, maxAge: 1000 * 60 * 60 }) // 밀리초 단위 - 1시간 동안 유효(서명 보안 X)
+   res.cookie('user', 'Alice', { signed: true, maxAge: 1000 * 60 * 60 }) // 밀리초 단위 - 1시간 동안 유효(서명 보안 됨)
    res.send('서명된 쿠키가 설정되었습니다.')
 })
 
