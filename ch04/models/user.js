@@ -50,8 +50,8 @@ module.exports = class User extends Sequelize.Model {
    static associate(db) {
       // User 모델이 Comment 모델과 1:N 관계를 가짐
       db.User.hasMany(db.Comment, {
-         foreignKey: 'commenter', // Comment 모델에서 외래 키로 사용할 컬럼 이름
-         sourceKey: 'id', // User 모델에서 Comment에게 외래키로 제공할 컬럼 이름
+         foreignKey: 'commenter', // Comment에서 외래 키로 사용할 컬럼 이름
+         sourceKey: 'id', // User에서 Comment에게 외래키로 제공할 컬럼 이름
       })
    }
 }
