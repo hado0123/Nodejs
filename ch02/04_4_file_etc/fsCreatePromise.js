@@ -5,6 +5,9 @@ const fs = require('fs').promises
 const constants = require('fs').constants
 
 // './folder'에 대한 접근 권한 확인
+// './folder'에 대한 접근 권한 확인
+// F_OK: 파일 존재 여부, W_OK: 쓰기 권한 여부, R_OK: 읽기 권한 여부가 있는지 확인
+// 권한이 없다면 에러 발생
 fs.access('./folder', constants.F_OK | constants.W_OK | constants.R_OK)
    .then(() => {
       // 폴더가 이미 있는 경우 에러 처리
@@ -24,6 +27,7 @@ fs.access('./folder', constants.F_OK | constants.W_OK | constants.R_OK)
       // 폴더 생성이 성공했을 때
       console.log('폴더 만들기 성공')
       // './folder/file.js'라는 빈 파일 생성 (쓰기 모드 'w')
+      //두번째 인수(어떤 동작으로 파일을 만들건지) => w:쓰기모드, r:읽기모드, a:기존 파일에 추가
       return fs.open('./folder/file.js', 'w')
    })
    .then((fd) => {
