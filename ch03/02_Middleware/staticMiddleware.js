@@ -6,7 +6,10 @@ const app = express()
 app.set('port', process.env.PORT || 3000)
 
 //3. static 미들웨어 사용
+// localhost:8000/ 로 들어왔을때
+//C:\project\node\ch03\02_Middleware\public 이 경로에서 정적파일을 찾는다
 // http://localhost:8000/style.css, http://localhost:8000/dog.png 로 public 폴더의 정적파일에 바로 접근 가능
+console.log(__dirname)
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {

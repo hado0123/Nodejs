@@ -30,7 +30,10 @@ name=Alice&age=30
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/submit', (req, res) => {
-   console.log(req.body)
+   // request, response 할때는 header + body 형태로 데이터가 전송된다.
+   // header영역: request, response 정보가 들어있음
+   // body 영역: 데이터가 들어있음
+   console.log(req.body) // form 태그에서 입력한 데이터가 들어있음
    res.send('데이터 수신 완료!')
 })
 
