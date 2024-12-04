@@ -7,6 +7,17 @@ router.get('/', (req, res) => {
    res.send('Hello, Express')
 })
 
+// localhost:8000/user로 들어오면 이 부분이 실행된다.
+/* 
+   app.js에서 
+   app.use('/', indexRouter)
+   app.use('/user', userRouter)
+   순서로 되어있기 때문이다.
+*/
+router.get('/:id', (req, res) => {
+   res.send('Hello, Express')
+})
+
 // 2.  next('route')를 이용해 라우터에 연결된 나머지 미들웨어 건너뛰기
 
 /*
