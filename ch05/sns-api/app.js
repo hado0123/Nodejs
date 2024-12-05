@@ -13,6 +13,9 @@ dotenv.config()
 // 라우터 및 기타 모듈 불러오기
 const authRouter = require('./routes/auth') // 인증 관련 라우터
 const indexRouter = require('./routes') // 기본 라우터
+const pageRouter = require('./routes/page')
+const postRouter = require('./routes/post')
+const userRouter = require('./routes/user')
 const { sequelize } = require('./models') // Sequelize ORM
 const passportConfig = require('./passport') // Passport 설정
 
@@ -60,6 +63,9 @@ app.use(passport.session()) // Passport 세션 연결
 // 라우터 등록
 app.use('/auth', authRouter) // 인증 관련 라우터 연결
 app.use('/', indexRouter) // 기본 라우터 연결
+app.use('/page', pageRouter)
+app.use('/post', postRouter)
+app.use('/user', userRouter)
 
 // 없는 라우터 처리 (404 에러)
 app.use((req, res, next) => {
