@@ -2,7 +2,7 @@
 const express = require('express') // Express 웹 프레임워크
 const path = require('path') // 경로 처리 유틸리티
 const cookieParser = require('cookie-parser') // 쿠키 처리 미들웨어
-// const passport = require('passport') // 인증 미들웨어
+const passport = require('passport') // 인증 미들웨어
 const morgan = require('morgan') // HTTP 요청 로깅 미들웨어
 const session = require('express-session') // 세션 관리 미들웨어
 const dotenv = require('dotenv') // 환경 변수 관리
@@ -11,12 +11,10 @@ const dotenv = require('dotenv') // 환경 변수 관리
 dotenv.config()
 
 // 라우터 및 기타 모듈 불러오기
-// const v1 = require('./routes/v1') // API v1 라우터
-// const v2 = require('./routes/v2') // API v2 라우터
-// const authRouter = require('./routes/auth') // 인증 관련 라우터
+const authRouter = require('./routes/auth') // 인증 관련 라우터
 const indexRouter = require('./routes') // 기본 라우터
 const { sequelize } = require('./models') // Sequelize ORM
-// const passportConfig = require('./passport') // Passport 설정
+const passportConfig = require('./passport') // Passport 설정
 
 // Express 애플리케이션 생성
 const app = express()
@@ -56,13 +54,11 @@ app.use(
 )
 
 // Passport 초기화 및 세션 연동
-// app.use(passport.initialize()) // Passport 초기화
-// app.use(passport.session()) // Passport 세션 연결
+app.use(passport.initialize()) // Passport 초기화
+app.use(passport.session()) // Passport 세션 연결
 
 // 라우터 등록
-// app.use('/v1', v1) // v1 API 라우터 연결
-// app.use('/v2', v2) // v2 API 라우터 연결
-// app.use('/auth', authRouter) // 인증 관련 라우터 연결
+app.use('/auth', authRouter) // 인증 관련 라우터 연결
 app.use('/', indexRouter) // 기본 라우터 연결
 
 // 없는 라우터 처리 (404 에러)
