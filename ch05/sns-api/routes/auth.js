@@ -126,25 +126,4 @@ router.get('/logout', isLoggedIn, (req, res) => {
    })
 })
 
-// 카카오 로그인 라우트
-router.get('/kakao', passport.authenticate('kakao')) // 카카오 로그인 인증 요청
-
-// 카카오 로그인 콜백 라우트
-router.get(
-   '/kakao/callback',
-   passport.authenticate('kakao', { failureRedirect: '/' }), // 카카오 인증 실패 시 메인 페이지로 리다이렉트
-   (req, res) => {
-      // 카카오 인증 성공 시 사용자 정보와 메시지 반환
-      res.json({
-         success: true,
-         message: '카카오 로그인에 성공했습니다.',
-         user: {
-            id: req.user.id,
-            email: req.user.email,
-            nick: req.user.nick,
-         },
-      })
-   }
-)
-
 module.exports = router
