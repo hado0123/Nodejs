@@ -50,50 +50,81 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
 
 // 로그인 라우트
 router.post('/login', isNotLoggedIn, (req, res, next) => {
-   // 로컬 전략을 사용하여 사용자 인증
    passport.authenticate('local', (authError, user, info) => {
       if (authError) {
-         console.error(authError)
-         // 인증 과정에서 에러 발생 시 500 상태 코드와 메시지 반환
-         return res.status(500).json({
-            success: false,
-            message: '인증 중 오류가 발생했습니다.',
-            error: authError,
-         })
+         return res.status(500).json({ success: false, message: '인증 중 오류 발생', error: authError })
       }
       if (!user) {
-         // 인증 실패 시 401 상태 코드와 메시지 반환
-         return res.status(401).json({
-            success: false,
-            message: info.message || '로그인에 실패했습니다.',
-         })
+         return res.status(401).json({ success: false, message: '로그인 실패' })
       }
-      // 사용자 세션 생성
+
       req.login(user, (loginError) => {
          if (loginError) {
-            console.error(loginError)
-            // 세션 생성 중 에러 발생 시 500 상태 코드와 메시지 반환
-            return res.status(500).json({
-               success: false,
-               message: '로그인 중 오류가 발생했습니다.',
-               error: loginError,
-            })
+            return res.status(500).json({ success: false, message: '로그인 중 오류 발생', error: loginError })
          }
-         // 로그인 성공 시 사용자 정보와 메시지 반환
+
+         // 세션에 사용자 정보 저장
+         req.session.user = {
+            id: user.id,
+            email: user.email,
+            nick: user.nick,
+         }
+
          res.json({
             success: true,
-            message: '로그인에 성공했습니다.',
-            user: {
-               id: user.id,
-               email: user.email,
-               nick: user.nick,
-            },
+            message: '로그인 성공',
+            user: req.session.user,
          })
       })
    })(req, res, next)
 })
 
+// router.post('/login', isNotLoggedIn, (req, res, next) => {
+//    // 로컬 전략을 사용하여 사용자 인증
+//    passport.authenticate('local', (authError, user, info) => {
+//       if (authError) {
+//          console.error(authError)
+//          // 인증 과정에서 에러 발생 시 500 상태 코드와 메시지 반환
+//          return res.status(500).json({
+//             success: false,
+//             message: '인증 중 오류가 발생했습니다.',
+//             error: authError,
+//          })
+//       }
+//       if (!user) {
+//          // 인증 실패 시 401 상태 코드와 메시지 반환
+//          return res.status(401).json({
+//             success: false,
+//             message: info.message || '로그인에 실패했습니다.',
+//          })
+//       }
+//       // 사용자 세션 생성
+//       req.login(user, (loginError) => {
+//          if (loginError) {
+//             console.error(loginError)
+//             // 세션 생성 중 에러 발생 시 500 상태 코드와 메시지 반환
+//             return res.status(500).json({
+//                success: false,
+//                message: '로그인 중 오류가 발생했습니다.',
+//                error: loginError,
+//             })
+//          }
+//          // 로그인 성공 시 사용자 정보와 메시지 반환
+//          res.json({
+//             success: true,
+//             message: '로그인에 성공했습니다.',
+//             user: {
+//                id: user.id,
+//                email: user.email,
+//                nick: user.nick,
+//             },
+//          })
+//       })
+//    })(req, res, next)
+// })
+
 // 로그아웃 라우트
+
 router.get('/logout', isLoggedIn, (req, res) => {
    // 로그아웃 처리
    req.logout((err) => {
@@ -124,6 +155,20 @@ router.get('/logout', isLoggedIn, (req, res) => {
          })
       })
    })
+})
+
+// 로그인 상태 확인 API
+router.get('/status', (req, res) => {
+   if (req.session.user) {
+      res.json({
+         isAuthenticated: true,
+         user: req.session.user,
+      })
+   } else {
+      res.json({
+         isAuthenticated: false,
+      })
+   }
 })
 
 module.exports = router

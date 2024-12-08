@@ -6,6 +6,7 @@ const passport = require('passport') // 인증 미들웨어
 const morgan = require('morgan') // HTTP 요청 로깅 미들웨어
 const session = require('express-session') // 세션 관리 미들웨어
 const dotenv = require('dotenv') // 환경 변수 관리
+const cors = require('cors') // cors 미들웨어 가져오기
 
 // 환경 변수 설정 파일 로드
 dotenv.config()
@@ -37,6 +38,12 @@ sequelize
    })
 
 // 미들웨어 설정
+app.use(
+   cors({
+      origin: 'http://localhost:3000', // 특정 출처만 허용
+      credentials: true, // 쿠키, 인증 정보 허용
+   })
+)
 app.use(morgan('dev')) // HTTP 요청 로깅 (dev 모드)
 app.use(express.static(path.join(__dirname, 'public'))) // 정적 파일 제공
 app.use(express.json()) // JSON 데이터 파싱
@@ -81,6 +88,8 @@ app.use((err, req, res, next) => {
    res.status(err.status || 500) // 상태 코드 설정
    res.render('error') // 에러 페이지 렌더링
 })
+
+app.options('*', cors()) // 모든 경로에 대한 OPTIONS 요청을 허용합니다.
 
 // 서버 시작
 app.listen(app.get('port'), () => {
