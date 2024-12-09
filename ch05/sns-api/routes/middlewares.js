@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 // 로그인 상태 확인 미들웨어
 exports.isLoggedIn = (req, res, next) => {
    // 사용자가 인증된 상태인지 확인
+   console.log('req.isAuthenticated()', req.isAuthenticated())
    if (req.isAuthenticated()) {
       // 인증된 경우 다음 미들웨어로 이동
       next()

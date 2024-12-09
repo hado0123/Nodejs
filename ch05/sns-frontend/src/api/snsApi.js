@@ -47,4 +47,24 @@ export const checkAuthStatus = () => {
    return fetchFromApi('/auth/status', 'GET')
 }
 
+//포스트 가져오기
+export const getPosts = () => {
+   return fetchFromApi('/post', 'GET')
+}
+
+//포스트 등록
+export const createPost = (postData) => {
+   return fetchFromApi('/post', 'POST', postData)
+}
+
+//포스트 수정
+export const updatePost = (postData) => {
+   return fetchFromApi('/post', 'PUT', postData)
+}
+
+//포스트 삭제
+export const deletePost = (id) => {
+   return fetchFromApi(`/post/${id}`, 'DELETE')
+}
+
 export default snsApi

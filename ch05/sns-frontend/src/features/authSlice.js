@@ -34,8 +34,8 @@ export const checkAuthStatusThunk = createAsyncThunk('auth/checkAuthStatus', asy
 // 비동기 Thunk 액션: 로그아웃 요청
 export const logoutUserThunk = createAsyncThunk('auth/logoutUser', async (_, { rejectWithValue }) => {
    try {
-      await logoutUser()
-      return null // 로그아웃 후 유저 정보 초기화
+      const response = await logoutUser()
+      return response.data
    } catch (error) {
       return rejectWithValue(error.response?.data?.message || '로그아웃 실패')
    }

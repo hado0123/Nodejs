@@ -1,4 +1,5 @@
-import { AppBar, Toolbar, Typography, Button } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material'
+import CreateIcon from '@mui/icons-material/Create'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserThunk, checkAuthStatusThunk } from '../../features/authSlice'
@@ -28,8 +29,13 @@ const Navbar = () => {
 
             {isAuthenticated ? (
                <>
+                  <Link to="/posts/create">
+                     <IconButton aria-label="글쓰기">
+                        <CreateIcon />
+                     </IconButton>
+                  </Link>
                   <Typography variant="body1" style={{ marginRight: '20px', color: 'black' }}>
-                     {user?.nick}님 환영합니다.
+                     {user?.nick}님
                   </Typography>
                   <Button onClick={handleLogout} variant="outlined">
                      로그아웃

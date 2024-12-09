@@ -126,8 +126,11 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
 // 로그아웃 라우트
 
 router.get('/logout', isLoggedIn, (req, res) => {
+   console.log('로그아웃1')
+
    // 로그아웃 처리
    req.logout((err) => {
+      console.log('로그아웃2')
       if (err) {
          console.error(err)
          // 로그아웃 과정에서 에러 발생 시 500 상태 코드와 메시지 반환
@@ -137,6 +140,7 @@ router.get('/logout', isLoggedIn, (req, res) => {
             error: err,
          })
       }
+      console.log('로그아웃3')
       // 세션 삭제
       req.session.destroy((destroyError) => {
          if (destroyError) {
@@ -149,6 +153,8 @@ router.get('/logout', isLoggedIn, (req, res) => {
             })
          }
          // 로그아웃 성공 메시지 반환
+         console.log('로그아웃 성공')
+
          res.json({
             success: true,
             message: '로그아웃에 성공했습니다.',

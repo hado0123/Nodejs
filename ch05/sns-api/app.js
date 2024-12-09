@@ -53,8 +53,9 @@ app.use(cookieParser(process.env.COOKIE_SECRET)) // 쿠키 파싱 및 서명
 // 세션 설정
 app.use(
    session({
+      name: 'user-session',
       resave: false, // 세션 데이터 변경 시에만 저장
-      saveUninitialized: false, // 초기화되지 않은 세션 저장 안 함
+      saveUninitialized: true, // 초기화되지 않은 세션 저장 안 함
       secret: process.env.COOKIE_SECRET, // 세션 암호화 키
       cookie: {
          httpOnly: true, // 클라이언트에서 쿠키 접근 불가

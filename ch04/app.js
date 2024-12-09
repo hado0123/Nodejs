@@ -53,7 +53,6 @@ app.use((err, req, res, next) => {
    res.status(status).send(`
       <h1>Error ${status}</h1>
       <p>${message}</p>
-      ${process.env.NODE_ENV !== 'production' ? `<pre>${err.stack}</pre>` : ''}
    `) //개발환경에서만 에러정보를 노출
 })
 // 서버 시작

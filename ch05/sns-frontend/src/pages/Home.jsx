@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Container, Typography } from '@mui/material'
 import PostItem from '../components/post/PostItem'
-import { fetchPosts } from '../features/postSlice'
+import { fetchPostsThunk } from '../features/postSlice'
 
 const Home = () => {
    const dispatch = useDispatch()
    const { posts, loading, error } = useSelector((state) => state.posts)
 
    useEffect(() => {
-      dispatch(fetchPosts())
+      dispatch(fetchPostsThunk())
    }, [dispatch])
 
    return (

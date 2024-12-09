@@ -26,7 +26,7 @@ module.exports = class Capital extends Sequelize.Model {
       // Capital 모델이 Country 모델과 1:1 관계를 가짐
       db.Capital.belongsTo(db.Country, {
          foreignKey: 'CountryId', // Capital에서 외래 키로 사용할 컬럼 이름
-         sourceKey: 'id', // Capital이 Country에서 참조할 컬럼 이름
+         targetKey: 'id', // Capital이 Country에서 참조할 컬럼 이름
       })
    }
 }
