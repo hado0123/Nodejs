@@ -47,24 +47,61 @@ export const checkAuthStatus = () => {
    return fetchFromApi('/auth/status', 'GET')
 }
 
+//특정 포스트 가져오기
+export const getPostById = (id) => {
+   return fetchFromApi(`/post/${id}`, 'GET')
+}
+
 //포스트 가져오기
 export const getPosts = () => {
    return fetchFromApi('/post', 'GET')
 }
 
 //포스트 등록
-export const createPost = (postData) => {
-   return fetchFromApi('/post', 'POST', postData)
+export const createPost = async (postData) => {
+   try {
+      const config = {
+         headers: {
+            'Content-Type': 'multipart/form-data', // 데이터 형식 지정
+         },
+      }
+      // 이미지 업로드 중
+      const response = await snsApi.post('/post', postData, config) // api 통신
+      return response
+   } catch (error) {
+      console.error(`API 요청 오류: ${error.message}`)
+      throw error
+   }
 }
 
 //포스트 수정
-export const updatePost = (postData) => {
-   return fetchFromApi('/post', 'PUT', postData)
+export const updatePost = async (id, postData) => {
+   try {
+      const config = {
+         headers: {
+            'Content-Type': 'multipart/form-data', // 데이터 형식 지정
+         },
+      }
+      // 이미지 업로드 중
+      const response = await snsApi.put(`/post/${id}`, postData, config) // api 통신
+      return response
+   } catch (error) {
+      console.error(`API 요청 오류: ${error.message}`)
+      throw error
+   }
+
+   // return fetchFromApi('/post', 'PUT', postData)
 }
 
 //포스트 삭제
-export const deletePost = (id) => {
-   return fetchFromApi(`/post/${id}`, 'DELETE')
+export const deletePost = async (id) => {
+   try {
+      const response = await snsApi.delete(`/post/${id}`, 'DELETE') // api 통신
+      return response
+   } catch (error) {
+      console.error(`API 요청 오류: ${error.message}`)
+      throw error
+   }
 }
 
 export default snsApi

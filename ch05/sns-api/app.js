@@ -5,11 +5,8 @@ const cookieParser = require('cookie-parser') // 쿠키 처리 미들웨어
 const passport = require('passport') // 인증 미들웨어
 const morgan = require('morgan') // HTTP 요청 로깅 미들웨어
 const session = require('express-session') // 세션 관리 미들웨어
-const dotenv = require('dotenv') // 환경 변수 관리
+require('dotenv').config() // 환경 변수 관리
 const cors = require('cors') // cors 미들웨어 가져오기
-
-// 환경 변수 설정 파일 로드
-dotenv.config()
 
 // 라우터 및 기타 모듈 불러오기
 const authRouter = require('./routes/auth') // 인증 관련 라우터
@@ -45,7 +42,7 @@ app.use(
    })
 )
 app.use(morgan('dev')) // HTTP 요청 로깅 (dev 모드)
-app.use(express.static(path.join(__dirname, 'public'))) // 정적 파일 제공
+app.use(express.static(path.join(__dirname, 'uploads'))) // 정적 파일 제공
 app.use(express.json()) // JSON 데이터 파싱
 app.use(express.urlencoded({ extended: false })) // URL-encoded 데이터 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET)) // 쿠키 파싱 및 서명
@@ -87,7 +84,7 @@ app.use((err, req, res, next) => {
    res.locals.message = err.message // 에러 메시지
    res.locals.error = process.env.NODE_ENV !== 'production' ? err : {} // 개발 환경에서만 에러 출력
    res.status(err.status || 500) // 상태 코드 설정
-   res.render('error') // 에러 페이지 렌더링
+   // res.render('error') // 에러 페이지 렌더링
 })
 
 app.options('*', cors()) // 모든 경로에 대한 OPTIONS 요청을 허용합니다.

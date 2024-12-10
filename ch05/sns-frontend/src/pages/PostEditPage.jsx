@@ -3,28 +3,23 @@ import PostForm from '../components/post/PostForm'
 import { Container } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchPostById, updatePostThunk } from '../features/postSlice'
+import { fetchPostByIdThunk, updatePostThunk } from '../features/postSlice'
 
 const PostEditPage = () => {
    const { id } = useParams()
    const navigate = useNavigate()
    const dispatch = useDispatch()
 
-   // Redux 상태 선택
-   const { post, loading, error } = useSelector((state) => ({
-      post: state.posts.posts.find((p) => p.id === Number(id)), // 특정 ID의 게시물 선택
-      loading: state.posts.loading,
-      error: state.posts.error,
-   }))
+   const { post, loading, error } = useSelector((state) => state.posts)
 
    // 게시물 데이터 불러오기
    useEffect(() => {
-      dispatch(fetchPostById(id))
+      dispatch(fetchPostByIdThunk(id))
    }, [dispatch, id])
 
    // 게시물 수정 핸들러
    const handleSubmit = (postData) => {
-      dispatch(updatePostThunk({ id, ...postData }))
+      dispatch(updatePostThunk({ id, postData }))
          .unwrap()
          .then(() => {
             alert('게시물이 성공적으로 수정되었습니다!')

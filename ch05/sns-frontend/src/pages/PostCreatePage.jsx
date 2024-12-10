@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import PostForm from '../components/post/PostForm'
 import { Container } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { createPostThunk } from '../features/postSlice' // Thunk 액션 import
+import { createPostThunk } from '../features/postSlice'
 
 const PostCreatePage = () => {
    const navigate = useNavigate()
@@ -15,7 +15,7 @@ const PostCreatePage = () => {
          .unwrap() // Thunk의 결과를 추출
          .then((response) => {
             alert('게시물이 성공적으로 등록되었습니다!')
-            navigate('/posts')
+            navigate('/')
          })
          .catch((error) => {
             console.error('게시물 등록 중 오류 발생:', error)

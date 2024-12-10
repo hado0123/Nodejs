@@ -1,92 +1,9 @@
-// const express = require('express')
-// const multer = require('multer')
-// const path = require('path')
-// const fs = require('fs')
-
-// const { Post, Hashtag } = require('../models')
-// const { isLoggedIn } = require('./middlewares')
-
-// const router = express.Router()
-
-// // Ensure 'uploads' directory exists
-// try {
-//    fs.readdirSync('uploads')
-// } catch (error) {
-//    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.')
-//    fs.mkdirSync('uploads')
-// }
-
-// // Multer configuration for image uploads
-// const upload = multer({
-//    storage: multer.diskStorage({
-//       destination(req, file, cb) {
-//          cb(null, 'uploads/')
-//       },
-//       filename(req, file, cb) {
-//          const ext = path.extname(file.originalname)
-//          cb(null, path.basename(file.originalname, ext) + Date.now() + ext)
-//       },
-//    }),
-//    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-// })
-
-// // Route for image upload
-// router.post('/img', isLoggedIn, upload.single('img'), (req, res) => {
-//    console.log(req.file)
-//    res.json({ success: true, url: `/img/${req.file.filename}` })
-// })
-
-// // Multer configuration for non-file data
-// const upload2 = multer()
-
-// // Route for creating a post
-// router.post('/', isLoggedIn, upload2.none(), async (req, res, next) => {
-//    try {
-//       console.log(req.user)
-//       const post = await Post.create({
-//          content: req.body.content,
-//          img: req.body.url,
-//          UserId: req.user.id,
-//       })
-
-//       // Extract hashtags from content
-//       const hashtags = req.body.content.match(/#[^\s#]*/g)
-//       if (hashtags) {
-//          const result = await Promise.all(
-//             hashtags.map((tag) =>
-//                Hashtag.findOrCreate({
-//                   where: { title: tag.slice(1).toLowerCase() },
-//                })
-//             )
-//          )
-//          await post.addHashtags(result.map((r) => r[0]))
-//       }
-
-//       // Respond with created post data
-//       res.json({
-//          success: true,
-//          post: {
-//             id: post.id,
-//             content: post.content,
-//             img: post.img,
-//             UserId: post.UserId,
-//          },
-//          message: '게시물이 성공적으로 등록되었습니다.',
-//       })
-//    } catch (error) {
-//       console.error(error)
-//       res.status(500).json({ success: false, message: 'An error occurred.', error })
-//    }
-// })
-
-// module.exports = router
-
 const express = require('express')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 
-const { Post, Hashtag } = require('../models')
+const { Post, Hashtag, User } = require('../models')
 const { isLoggedIn } = require('./middlewares')
 
 const router = express.Router()
@@ -113,35 +30,32 @@ const upload = multer({
    limits: { fileSize: 5 * 1024 * 1024 }, // 파일 크기 제한 (5MB)
 })
 
-// 이미지 업로드 라우터
-router.post('/img', isLoggedIn, upload.single('img'), (req, res) => {
-   console.log(req.file)
-   res.json({ success: true, url: `/img/${req.file.filename}` }) // 업로드된 이미지 URL 반환
-})
-
-// 텍스트 데이터 전송을 위한 multer 설정 (파일 제외)
-const upload2 = multer()
-
 // 게시물 등록 라우터
-router.post('/', isLoggedIn, upload2.none(), async (req, res) => {
+router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
    try {
-      console.log(req.user)
+      if (!req.file) {
+         return res.status(400).json({ success: false, message: '파일 업로드에 실패했습니다.' })
+      }
+
+      // 게시물 생성
       const post = await Post.create({
          content: req.body.content, // 게시물 내용
-         img: req.body.url, // 이미지 URL
+         img: `/${req.file.filename}`, // 이미지 URL
          UserId: req.user.id, // 작성자 ID
       })
 
       // 게시물 내용에서 해시태그 추출
-      const hashtags = req.body.content.match(/#[^\s#]*/g)
+      const hashtags = req.body.hashtags.match(/#[^\s#]*/g)
       if (hashtags) {
          const result = await Promise.all(
             hashtags.map((tag) =>
                Hashtag.findOrCreate({
-                  where: { title: tag.slice(1).toLowerCase() }, // 해시태그 소문자 변환 후 저장
+                  where: { title: tag.slice(1) }, // 해시태그 소문자 변환 후 저장
                })
             )
          )
+
+         // posthashtag 관계 테이블에 연결 데이터 추가
          await post.addHashtags(result.map((r) => r[0])) // 해시태그 연결
       }
 
@@ -162,7 +76,7 @@ router.post('/', isLoggedIn, upload2.none(), async (req, res) => {
 })
 
 // 게시물 수정 라우터
-router.put('/:id', isLoggedIn, upload2.none(), async (req, res) => {
+router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
    try {
       const post = await Post.findOne({ where: { id: req.params.id, UserId: req.user.id } })
       if (!post) {
@@ -172,19 +86,21 @@ router.put('/:id', isLoggedIn, upload2.none(), async (req, res) => {
       // 게시물 수정
       await post.update({
          content: req.body.content, // 수정된 내용
-         img: req.body.url, // 수정된 이미지 URL
+         img: req.file ? `/${req.file.filename}` : post.img, // 수정된 이미지 URL (파일이 있으면 교체, 없으면 기존 URL 유지)
       })
 
-      // 해시태그 재설정
-      const hashtags = req.body.content.match(/#[^\s#]*/g)
+      // 게시물 내용에서 해시태그 추출
+      const hashtags = req.body.hashtags.match(/#[^\s#]*/g)
       if (hashtags) {
          const result = await Promise.all(
             hashtags.map((tag) =>
                Hashtag.findOrCreate({
-                  where: { title: tag.slice(1).toLowerCase() }, // 해시태그 소문자 변환 후 저장
+                  where: { title: tag.slice(1) }, // 해시태그 소문자 변환 후 저장
                })
             )
          )
+
+         // posthashtag 관계 테이블 업데이트 (기존 연결 해제 후 새로운 연결 추가)
          await post.setHashtags(result.map((r) => r[0])) // 기존 해시태그를 새 해시태그로 교체
       }
 
@@ -222,6 +138,78 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
    } catch (error) {
       console.error(error)
       res.status(500).json({ success: false, message: '게시물 삭제 중 오류가 발생했습니다.', error })
+   }
+})
+
+// 특정 게시물 불러오기 라우터 (id로 게시물 조회)
+router.get('/:id', async (req, res) => {
+   try {
+      const post = await Post.findOne({
+         where: { id: req.params.id }, // 특정 id의 게시물 조회
+         include: [
+            {
+               model: User, // 작성자 정보 포함
+               attributes: ['id', 'nick', 'email'],
+            },
+            {
+               model: Hashtag, // 해시태그 정보 포함
+               attributes: ['title'],
+            },
+         ],
+      })
+
+      if (!post) {
+         return res.status(404).json({ success: false, message: '게시물을 찾을 수 없습니다.' })
+      }
+
+      res.json({
+         success: true,
+         post,
+         message: '게시물을 성공적으로 불러왔습니다.',
+      })
+   } catch (error) {
+      console.error(error)
+      res.status(500).json({ success: false, message: '게시물 불러오는 중 오류가 발생했습니다.', error })
+   }
+})
+
+// 전체 게시물 리스트 불러오기 라우터 (페이징 추가 가능)
+router.get('/', async (req, res) => {
+   const page = parseInt(req.query.page, 10) || 1 // 요청으로부터 page 번호 받기 (기본값: 1)
+   const limit = parseInt(req.query.limit, 10) || 10 // 요청으로부터 limit 받기 (기본값: 10)
+   const offset = (page - 1) * limit // 오프셋 계산
+
+   try {
+      const { count, rows: posts } = await Post.findAndCountAll({
+         limit, // 한 페이지에 불러올 게시물 개수
+         offset, // 페이지 오프셋
+         order: [['createdAt', 'DESC']], // 최신순 정렬
+         include: [
+            {
+               model: User, // 작성자 정보 포함
+               attributes: ['id', 'nick', 'email'],
+            },
+            {
+               model: Hashtag, // 해시태그 정보 포함
+               attributes: ['title'],
+            },
+         ],
+      })
+
+      res.json({
+         success: true,
+         posts,
+         pagination: {
+            totalPosts: count, // 전체 게시물 수
+            currentPage: page, // 현재 페이지
+            totalPages: Math.ceil(count / limit), // 총 페이지 수
+            limit, // 페이지당 게시물 수
+         },
+         message: '전체 게시물 리스트를 성공적으로 불러왔습니다.',
+      })
+   } catch (error) {
+      console.error(error)
+      res.status(500).json({ success: false, message: '게시물 리스트 불러오는 중 오류가 발생했습니다.', error })
    }
 })
 
