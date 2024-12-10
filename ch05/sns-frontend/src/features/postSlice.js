@@ -10,7 +10,7 @@ export const fetchPostByIdThunk = createAsyncThunk('posts/fetchPostById', async 
    }
 })
 
-// 🔥 비동기 Thunk 액션: 게시물 가져오기
+// 비동기 Thunk 액션: 게시물 가져오기
 export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (page, { rejectWithValue }) => {
    try {
       const response = await getPosts(page) // 백엔드 API URL 확인 필요
@@ -20,7 +20,7 @@ export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (page,
    }
 })
 
-// 🔥 비동기 Thunk 액션: 게시물 등록
+// 비동기 Thunk 액션: 게시물 등록
 export const createPostThunk = createAsyncThunk('posts/createPost', async (postData, { rejectWithValue }) => {
    try {
       const response = await createPost(postData)
@@ -30,7 +30,7 @@ export const createPostThunk = createAsyncThunk('posts/createPost', async (postD
    }
 })
 
-// 🔥 비동기 Thunk 액션: 게시물 수정
+// 비동기 Thunk 액션: 게시물 수정
 export const updatePostThunk = createAsyncThunk('posts/updatePost', async (data, { rejectWithValue }) => {
    try {
       const { id, postData } = data
@@ -41,7 +41,7 @@ export const updatePostThunk = createAsyncThunk('posts/updatePost', async (data,
    }
 })
 
-// 🔥 비동기 Thunk 액션: 게시물 삭제
+// 비동기 Thunk 액션: 게시물 삭제
 export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, { rejectWithValue }) => {
    try {
       const response = await deletePost(id)
@@ -51,13 +51,13 @@ export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, {
    }
 })
 
-// 🔥 Redux Slice
+// Redux Slice
 const postSlice = createSlice({
    name: 'posts',
    initialState: { posts: [], pagination: null, post: null, loading: false, error: null },
    reducers: {}, // 추가적인 리듀서 없음
    extraReducers: (builder) => {
-      // 🔥 fetchPosts 관련 리듀서
+      // fetchPosts 관련 리듀서
       builder
          .addCase(fetchPostsThunk.pending, (state) => {
             state.loading = true
@@ -72,7 +72,7 @@ const postSlice = createSlice({
             state.loading = false
             state.error = action.payload
          })
-      // 🔥 fetchPostById 관련 리듀서
+      // fetchPostById 관련 리듀서
       builder
          .addCase(fetchPostByIdThunk.pending, (state) => {
             state.loading = true
@@ -87,7 +87,7 @@ const postSlice = createSlice({
             state.error = action.payload
          })
 
-      // 🔥 createPost 관련 리듀서
+      // createPost 관련 리듀서
       builder
          .addCase(createPostThunk.pending, (state) => {
             state.loading = true
@@ -102,7 +102,7 @@ const postSlice = createSlice({
             state.error = action.payload
          })
 
-      // 🔥 updatePost 관련 리듀서
+      // updatePost 관련 리듀서
       builder
          .addCase(updatePostThunk.pending, (state) => {
             state.loading = true
@@ -120,7 +120,7 @@ const postSlice = createSlice({
             state.error = action.payload
          })
 
-      // 🔥 deletePost 관련 리듀서
+      // deletePost 관련 리듀서
       builder
          .addCase(deletePostThunk.pending, (state) => {
             state.loading = true

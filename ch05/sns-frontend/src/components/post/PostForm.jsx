@@ -3,24 +3,28 @@ import { TextField, Button, Box } from '@mui/material'
 
 const PostForm = ({ onSubmit, initialValues = {} }) => {
    const [content, setContent] = useState(initialValues.content || '')
-   const [imgUrl, setImgUrl] = useState(initialValues.img || '')
+   const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '')
    const [imgFile, setImgFile] = useState(null) // 이미지 파일 객체
-   const [hashtags, setHashtags] = useState(initialValues.hashtags ? initialValues.hashtags.join(', ') : '')
-   const [isInitialSet, setIsInitialSet] = useState(false) // 초기값 설정 여부
+   const [hashtags, setHashtags] = useState(
+      Array.isArray(initialValues.Hashtags)
+         ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') // 각 객체의 title을 #과 함께 문자열로 변환
+         : ''
+   )
+   // const [isInitialSet, setIsInitialSet] = useState(false) // 초기값 설정 여부
 
    // 최초에만 initialValues로 상태 초기화 (초기 1회만 실행)
-   useEffect(() => {
-      if (!isInitialSet) {
-         setContent(initialValues.content || '')
-         setImgUrl(initialValues.img || '')
-         setHashtags(
-            Array.isArray(initialValues.Hashtags)
-               ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') // 각 객체의 title을 #과 함께 문자열로 변환
-               : ''
-         )
-         setIsInitialSet(true) // 초기값을 한번 설정했다고 표시
-      }
-   }, [initialValues, isInitialSet])
+   // useEffect(() => {
+   //    if (!isInitialSet) {
+   //       setContent(initialValues.content || '')
+   //       setImgUrl(process.env.REACT_APP_API_URL + initialValues.img || '')
+   //       setHashtags(
+   //          Array.isArray(initialValues.Hashtags)
+   //             ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') // 각 객체의 title을 #과 함께 문자열로 변환
+   //             : ''
+   //       )
+   //       setIsInitialSet(true) // 초기값을 한번 설정했다고 표시
+   //    }
+   // }, [initialValues, isInitialSet])
 
    // 이미지 파일 선택 핸들러
    const handleImageChange = (e) => {

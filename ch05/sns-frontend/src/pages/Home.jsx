@@ -23,7 +23,7 @@ const Home = ({ isAuthenticated }) => {
    }
 
    return (
-      <Container maxWidth="sm">
+      <Container maxWidth="xs">
          <Typography variant="h4" align="center" gutterBottom>
             홈 피드
          </Typography>

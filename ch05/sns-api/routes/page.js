@@ -22,14 +22,6 @@ router.get('/profile', isLoggedIn, (req, res) => {
    })
 })
 
-// 회원가입 페이지
-router.get('/join', isNotLoggedIn, (req, res) => {
-   res.json({
-      success: true,
-      message: '회원가입 준비가 완료되었습니다.',
-   })
-})
-
 // 메인 피드
 router.get('/', async (req, res, next) => {
    try {

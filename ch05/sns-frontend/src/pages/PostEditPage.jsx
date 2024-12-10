@@ -22,7 +22,7 @@ const PostEditPage = () => {
       dispatch(updatePostThunk({ id, postData }))
          .unwrap()
          .then(() => {
-            alert('게시물이 성공적으로 수정되었습니다!')
+            // alert('게시물이 성공적으로 수정되었습니다!')
             navigate('/')
          })
          .catch((error) => {

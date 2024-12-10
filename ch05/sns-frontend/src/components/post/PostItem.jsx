@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, CardActions, Button, IconButton } from '@mui/material'
+import { Card, CardMedia, CardContent, Typography, Box, CardActions, Button, IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 // import FavoriteIcon from '@mui/icons-material/Favorite'
@@ -16,7 +16,7 @@ const PostItem = ({ post, isAuthenticated }) => {
       dispatch(deletePostThunk(id)) // Thunk로 데이터 전송
          .unwrap() // Thunk의 결과를 추출
          .then((response) => {
-            alert('게시물이 성공적으로 삭제되었습니다!')
+            // alert('게시물이 성공적으로 삭제되었습니다!')
             navigate('/')
          })
          .catch((error) => {
@@ -26,8 +26,8 @@ const PostItem = ({ post, isAuthenticated }) => {
    }
    return (
       <Card style={{ margin: '20px 0' }}>
+         <CardMedia sx={{ height: 240 }} image={`${process.env.REACT_APP_API_URL}${post.img}`} title={post.content} />
          <CardContent>
-            <img src={`${post.img}`} alt={post.content}></img>
             <Typography>@{post.User.nick}</Typography>
             <Typography>{post.createdAt}</Typography>
             <Typography>{post.content}</Typography>

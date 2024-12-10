@@ -33,6 +33,7 @@ const upload = multer({
 // 게시물 등록 라우터
 router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
    try {
+      console.log(req.file)
       if (!req.file) {
          return res.status(400).json({ success: false, message: '파일 업로드에 실패했습니다.' })
       }
@@ -78,40 +79,51 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
 // 게시물 수정 라우터
 router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
    try {
+      // 1️. 게시물 존재 여부 확인
       const post = await Post.findOne({ where: { id: req.params.id, UserId: req.user.id } })
       if (!post) {
          return res.status(404).json({ success: false, message: '게시물을 찾을 수 없습니다.' })
       }
 
-      // 게시물 수정
+      // 2️. 게시물 수정
       await post.update({
          content: req.body.content, // 수정된 내용
          img: req.file ? `/${req.file.filename}` : post.img, // 수정된 이미지 URL (파일이 있으면 교체, 없으면 기존 URL 유지)
       })
 
-      // 게시물 내용에서 해시태그 추출
+      // 3️. 게시물 내용에서 해시태그 추출
       const hashtags = req.body.hashtags.match(/#[^\s#]*/g)
       if (hashtags) {
          const result = await Promise.all(
             hashtags.map((tag) =>
                Hashtag.findOrCreate({
-                  where: { title: tag.slice(1) }, // 해시태그 소문자 변환 후 저장
+                  where: { title: tag.slice(1).toLowerCase() }, // 해시태그 소문자 변환 후 저장
                })
             )
          )
 
-         // posthashtag 관계 테이블 업데이트 (기존 연결 해제 후 새로운 연결 추가)
+         // 4️. posthashtag 관계 테이블 업데이트 (기존 연결 해제 후 새로운 연결 추가)
          await post.setHashtags(result.map((r) => r[0])) // 기존 해시태그를 새 해시태그로 교체
       }
 
+      // 5️. 게시물 다시 조회 (include 추가)
+      const updatedPost = await Post.findOne({
+         where: { id: req.params.id },
+         include: [
+            {
+               model: User,
+               attributes: ['id', 'nick', 'email'], // User의 특정 필드만 가져오기
+            },
+            {
+               model: Hashtag,
+               attributes: ['title'], // Hashtag의 title만 가져오기
+            },
+         ],
+      })
+
       res.json({
          success: true,
-         post: {
-            id: post.id,
-            content: post.content,
-            img: post.img,
-            UserId: post.UserId,
-         },
+         post: updatedPost,
          message: '게시물이 성공적으로 수정되었습니다.',
       })
    } catch (error) {
@@ -119,6 +131,60 @@ router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
       res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
    }
 })
+
+// 게시물 수정 (트랜잭션 적용)
+// router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
+//    const t = await sequelize.transaction()
+//    try {
+//       const post = await Post.findOne({ where: { id: req.params.id, UserId: req.user.id } }, { transaction: t })
+//       if (!post) {
+//          return res.status(404).json({ success: false, message: '게시물을 찾을 수 없습니다.' })
+//       }
+
+//       await post.update(
+//          {
+//             content: req.body.content,
+//             img: req.file ? `/${req.file.filename}` : post.img,
+//          },
+//          { transaction: t }
+//       )
+
+//       const hashtags = req.body.hashtags.match(/#[^\s#]*/g)
+//       if (hashtags) {
+//          const result = await Promise.all(
+//             hashtags.map((tag) =>
+//                Hashtag.findOrCreate(
+//                   {
+//                      where: { title: tag.slice(1).toLowerCase() },
+//                   },
+//                   { transaction: t }
+//                )
+//             )
+//          )
+//          await post.setHashtags(
+//             result.map((r) => r[0]),
+//             { transaction: t }
+//          )
+//       }
+
+//       const updatedPost = await Post.findOne(
+//          {
+//             where: { id: req.params.id },
+//             include: [
+//                { model: User, attributes: ['id', 'nick', 'email'] },
+//                { model: Hashtag, attributes: ['title'] },
+//             ],
+//          },
+//          { transaction: t }
+//       )
+
+//       await t.commit()
+//       res.json({ success: true, post: updatedPost, message: '게시물이 성공적으로 수정되었습니다.' })
+//    } catch (error) {
+//       await t.rollback()
+//       res.status(500).json({ success: false, message: '오류가 발생했습니다.', error })
+//    }
+// })
 
 // 게시물 삭제 라우터
 router.delete('/:id', isLoggedIn, async (req, res) => {
@@ -176,7 +242,7 @@ router.get('/:id', async (req, res) => {
 // 전체 게시물 리스트 불러오기 라우터 (페이징 추가 가능)
 router.get('/', async (req, res) => {
    const page = parseInt(req.query.page, 10) || 1 // page 번호 받기 (기본값: 1)
-   const limit = parseInt(req.query.limit, 10) || 10 // 한페이지 당 나타날 레코드 갯수인 limit 받기 (기본값: 10)
+   const limit = parseInt(req.query.limit, 10) || 3 // 한페이지 당 나타날 레코드 갯수인 limit 받기 (기본값: 3)
    const offset = (page - 1) * limit // 오프셋 계산
 
    try {
