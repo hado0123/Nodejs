@@ -6,12 +6,24 @@ import SignupPage from './pages/SignupPage'
 import PostCreatePage from './pages/PostCreatePage'
 import PostEditPage from './pages/PostEditPage'
 
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { checkAuthStatusThunk } from './features/authSlice'
+
 function App() {
+   const dispatch = useDispatch()
+   const { isAuthenticated, user } = useSelector((state) => state.auth) // 로그인 상태 가져오기
+
+   // 애플리케이션 시작 시 로그인 상태 확인
+   useEffect(() => {
+      dispatch(checkAuthStatusThunk())
+   }, [dispatch])
+
    return (
       <>
-         <Navbar />
+         <Navbar isAuthenticated={isAuthenticated} user={user} />
          <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/posts/create" element={<PostCreatePage />} />

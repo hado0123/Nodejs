@@ -8,15 +8,15 @@ const Login = () => {
    const [email, setEmail] = useState('')
    const [password, setPassword] = useState('')
    const dispatch = useDispatch()
-   const navigate = useNavigate() // 🔥 useNavigate 훅 추가
+   const navigate = useNavigate()
    const { loading, error } = useSelector((state) => state.auth)
 
-   const handleLogin = () => {
+   const handleLogin = (e) => {
+      if (e) e.preventDefault() // 🔥 폼의 기본 제출 동작 방지
       if (email.trim() && password.trim()) {
          dispatch(loginUserThunk({ email, password }))
             .unwrap()
             .then(() => {
-               // 🔥 로그인 성공 시 / 경로로 이동
                navigate('/')
             })
             .catch((error) => {
@@ -37,11 +37,21 @@ const Login = () => {
             </Typography>
          )}
 
-         <TextField label="이메일" variant="outlined" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
-         <TextField label="비밀번호" variant="outlined" type="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
-         <Button variant="contained" color="primary" onClick={handleLogin} fullWidth disabled={loading} style={{ marginTop: '20px' }}>
-            {loading ? <CircularProgress size={24} /> : '로그인'}
-         </Button>
+         {/* 🔥 form 태그 추가, onSubmit 핸들러 설정 */}
+         <form onSubmit={handleLogin}>
+            <TextField label="이메일" variant="outlined" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField label="비밀번호" variant="outlined" type="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Button
+               variant="contained"
+               color="primary"
+               type="submit" // 🔥 type="submit" 추가
+               fullWidth
+               disabled={loading}
+               style={{ marginTop: '20px' }}
+            >
+               {loading ? <CircularProgress size={24} /> : '로그인'}
+            </Button>
+         </form>
 
          <p>
             계정이 없으신가요? <Link to="/signup">회원가입</Link>

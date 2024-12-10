@@ -11,9 +11,9 @@ export const fetchPostByIdThunk = createAsyncThunk('posts/fetchPostById', async 
 })
 
 // 🔥 비동기 Thunk 액션: 게시물 가져오기
-export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (_, { rejectWithValue }) => {
+export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (page, { rejectWithValue }) => {
    try {
-      const response = await getPosts() // 백엔드 API URL 확인 필요
+      const response = await getPosts(page) // 백엔드 API URL 확인 필요
       return response.data
    } catch (error) {
       return rejectWithValue(error.response?.data?.message || '게시물 불러오기 실패')
@@ -54,7 +54,7 @@ export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, {
 // 🔥 Redux Slice
 const postSlice = createSlice({
    name: 'posts',
-   initialState: { posts: [], post: null, loading: false, error: null },
+   initialState: { posts: [], pagination: null, post: null, loading: false, error: null },
    reducers: {}, // 추가적인 리듀서 없음
    extraReducers: (builder) => {
       // 🔥 fetchPosts 관련 리듀서
@@ -66,6 +66,7 @@ const postSlice = createSlice({
          .addCase(fetchPostsThunk.fulfilled, (state, action) => {
             state.loading = false
             state.posts = action.payload.posts
+            state.pagination = action.payload.pagination
          })
          .addCase(fetchPostsThunk.rejected, (state, action) => {
             state.loading = false

@@ -55,7 +55,7 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
 
          {imgUrl && (
             <Box mt={2}>
-               <img src={imgUrl} alt="업로드 이미지 미리보기" style={{ width: '100%', maxHeight: '300px' }} />
+               <img src={imgUrl} alt="업로드 이미지 미리보기" style={{ width: '400px' }} />
             </Box>
          )}
 

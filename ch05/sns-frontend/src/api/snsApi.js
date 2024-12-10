@@ -53,8 +53,8 @@ export const getPostById = (id) => {
 }
 
 //포스트 가져오기
-export const getPosts = () => {
-   return fetchFromApi('/post', 'GET')
+export const getPosts = (page) => {
+   return fetchFromApi(`/post?page=${page}`, 'GET')
 }
 
 //포스트 등록

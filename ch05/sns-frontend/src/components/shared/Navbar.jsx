@@ -1,18 +1,11 @@
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create'
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { logoutUserThunk, checkAuthStatusThunk } from '../../features/authSlice'
-import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { logoutUserThunk } from '../../features/authSlice'
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, user }) => {
    const dispatch = useDispatch()
-   const { isAuthenticated, user } = useSelector((state) => state.auth)
-
-   // 새로고침 시 로그인 상태 확인
-   useEffect(() => {
-      dispatch(checkAuthStatusThunk())
-   }, [dispatch])
 
    const handleLogout = () => {
       dispatch(logoutUserThunk())

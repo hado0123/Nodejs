@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deletePostThunk } from '../../features/postSlice'
 
-const PostItem = ({ post }) => {
+const PostItem = ({ post, isAuthenticated }) => {
    const navigate = useNavigate()
    const dispatch = useDispatch()
 
@@ -36,16 +36,18 @@ const PostItem = ({ post }) => {
             <Button size="small" color="primary">
                <FavoriteBorderIcon fontSize="small" />
             </Button>
-            <Box sx={{ p: 2 }}>
-               <Link to={`/posts/edit/${post.id}`}>
-                  <IconButton aria-label="edit" size="small">
-                     <EditIcon fontSize="small" />
+            {isAuthenticated && (
+               <Box sx={{ p: 2 }}>
+                  <Link to={`/posts/edit/${post.id}`}>
+                     <IconButton aria-label="edit" size="small">
+                        <EditIcon fontSize="small" />
+                     </IconButton>
+                  </Link>
+                  <IconButton aria-label="delete" size="small" onClick={() => onClickDelete(post.id)}>
+                     <DeleteIcon fontSize="small" />
                   </IconButton>
-               </Link>
-               <IconButton aria-label="delete" size="small" onClick={() => onClickDelete(post.id)}>
-                  <DeleteIcon fontSize="small" />
-               </IconButton>
-            </Box>
+               </Box>
+            )}
          </CardActions>
       </Card>
    )

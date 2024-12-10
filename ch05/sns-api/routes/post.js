@@ -175,22 +175,26 @@ router.get('/:id', async (req, res) => {
 
 // 전체 게시물 리스트 불러오기 라우터 (페이징 추가 가능)
 router.get('/', async (req, res) => {
-   const page = parseInt(req.query.page, 10) || 1 // 요청으로부터 page 번호 받기 (기본값: 1)
-   const limit = parseInt(req.query.limit, 10) || 10 // 요청으로부터 limit 받기 (기본값: 10)
+   const page = parseInt(req.query.page, 10) || 1 // page 번호 받기 (기본값: 1)
+   const limit = parseInt(req.query.limit, 10) || 10 // 한페이지 당 나타날 레코드 갯수인 limit 받기 (기본값: 10)
    const offset = (page - 1) * limit // 오프셋 계산
 
    try {
-      const { count, rows: posts } = await Post.findAndCountAll({
-         limit, // 한 페이지에 불러올 게시물 개수
-         offset, // 페이지 오프셋
-         order: [['createdAt', 'DESC']], // 최신순 정렬
+      // count만 따로 가져오기
+      const count = await Post.count()
+
+      // posts 따로 가져오기
+      const posts = await Post.findAll({
+         limit,
+         offset,
+         order: [['createdAt', 'DESC']],
          include: [
             {
-               model: User, // 작성자 정보 포함
+               model: User,
                attributes: ['id', 'nick', 'email'],
             },
             {
-               model: Hashtag, // 해시태그 정보 포함
+               model: Hashtag,
                attributes: ['title'],
             },
          ],
