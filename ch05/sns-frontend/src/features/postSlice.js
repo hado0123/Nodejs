@@ -45,7 +45,7 @@ export const updatePostThunk = createAsyncThunk('posts/updatePost', async (data,
 export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, { rejectWithValue }) => {
    try {
       const response = await deletePost(id)
-      return response.data // 삭제 성공 후 삭제된 게시물의 ID 반환
+      return id // 삭제 성공 후 삭제된 게시물의 ID 반환
    } catch (error) {
       return rejectWithValue(error.response?.data?.message || '게시물 삭제 실패')
    }
@@ -127,7 +127,7 @@ const postSlice = createSlice({
          })
          .addCase(deletePostThunk.fulfilled, (state, action) => {
             state.loading = false
-            // state.posts = state.posts.filter((post) => post.id !== action.payload) // 삭제된 게시물 제거
+            state.posts = state.posts.filter((post) => post.id !== action.payload) // 삭제된 게시물 제거
          })
          .addCase(deletePostThunk.rejected, (state, action) => {
             state.loading = false

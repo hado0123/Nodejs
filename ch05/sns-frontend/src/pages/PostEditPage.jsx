@@ -23,7 +23,7 @@ const PostEditPage = () => {
          .unwrap()
          .then(() => {
             alert('게시물이 성공적으로 수정되었습니다!')
-            navigate('/posts')
+            navigate('/')
          })
          .catch((error) => {
             console.error('게시물 수정 중 오류 발생:', error)

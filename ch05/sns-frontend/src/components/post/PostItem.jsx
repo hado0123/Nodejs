@@ -20,14 +20,14 @@ const PostItem = ({ post }) => {
             navigate('/')
          })
          .catch((error) => {
-            console.error('게시물 등록 중 오류 발생:', error)
-            alert('게시물 등록에 실패했습니다.')
+            console.error('게시물 삭제 중 오류 발생:', error)
+            alert('게시물 삭제에 실패했습니다.')
          })
    }
    return (
       <Card style={{ margin: '20px 0' }}>
          <CardContent>
-            <img src={`http://localhost:8000${post.img}`} alt={post.content}></img>
+            <img src={`${post.img}`} alt={post.content}></img>
             <Typography>@{post.User.nick}</Typography>
             <Typography>{post.createdAt}</Typography>
             <Typography>{post.content}</Typography>
