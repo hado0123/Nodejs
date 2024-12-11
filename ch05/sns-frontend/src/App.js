@@ -29,8 +29,8 @@ function App() {
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} user={user} />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/my" element={<MyPage />} />
-            <Route path="/my/:id" element={<MyPage />} />
+            <Route path="/my" element={<MyPage auth={user} />} />
+            <Route path="/my/:id" element={<MyPage auth={user} />} />
             <Route path="/posts/create" element={<PostCreatePage />} />
             <Route path="/posts/edit/:id" element={<PostEditPage />} />
          </Routes>

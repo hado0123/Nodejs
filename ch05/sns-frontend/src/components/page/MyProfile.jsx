@@ -10,7 +10,7 @@ import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-const MyProfile = () => {
+const MyProfile = ({ auth }) => {
    const { id } = useParams()
    const dispatch = useDispatch()
    const { user } = useSelector((state) => state.page)
@@ -74,7 +74,8 @@ const MyProfile = () => {
                   <Button
                      variant="contained"
                      onClick={() => onClickFollow(`${user.id}`)}
-                     disabled={!id || String(user.id) === String(id) ? true : false} // id가 없으면 disabled = true
+                     // path에 id가 없거나(내 페이지), 내 페이지가 아니거나, 이미 팔로우한 사람 이라면
+                     disabled={!id || String(auth.id) === String(id) || user.Followers.filter((f) => f.id === auth.id).length > 0 ? true : false} // id가 없으면 disabled = true
                   >
                      Follow
                   </Button>

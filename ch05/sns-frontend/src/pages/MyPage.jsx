@@ -1,11 +1,11 @@
 import { Container } from '@mui/material'
 import MyProfile from '../components/page/MyProfile'
 
-const MyPage = () => {
+const MyPage = ({ auth }) => {
    return (
       <Container maxWidth="md">
          <h1>MyFeed</h1>
-         <MyProfile />
+         <MyProfile auth={auth} />
       </Container>
    )
 }
