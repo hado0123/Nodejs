@@ -13,13 +13,65 @@ router.use((req, res, next) => {
    next()
 })
 
-// 프로필 조회
+// 내 프로필 조회
 router.get('/profile', isLoggedIn, (req, res) => {
    res.json({
       success: true,
       user: req.user,
       message: '프로필 정보를 성공적으로 가져왔습니다.',
    })
+})
+
+// 특정인 프로필 조회
+router.get('/profile/:id', isLoggedIn, async (req, res) => {
+   try {
+      const userId = req.params.id // URL에서 사용자 ID 가져오기
+      const user = await User.findOne({
+         where: { id: userId },
+         attributes: ['id', 'nick', 'email', 'createdAt', 'updatedAt'], // 사용자 기본 정보
+         include: [
+            {
+               model: User,
+               as: 'Followers', // 나를 팔로우하는 사람들
+               attributes: ['id', 'nick', 'email'], // 팔로워의 기본 정보만 반환
+            },
+            {
+               model: User,
+               as: 'Followings', // 내가 팔로우하는 사람들
+               attributes: ['id', 'nick', 'email'], // 팔로잉의 기본 정보만 반환
+            },
+         ],
+      })
+
+      if (!user) {
+         return res.status(404).json({
+            success: false,
+            message: '사용자를 찾을 수 없습니다.',
+         })
+      }
+
+      // Sequelize는 Followers와 Followings가 배열 형태로 반환됩니다.
+      res.json({
+         success: true,
+         user: {
+            id: user.id,
+            nick: user.nick,
+            email: user.email,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            Followers: user.Followers, // 팔로워 목록 배열
+            Followings: user.Followings, // 팔로잉 목록 배열
+         },
+         message: '프로필 정보를 성공적으로 가져왔습니다.',
+      })
+   } catch (error) {
+      console.error('오류 발생:', error)
+      res.status(500).json({
+         success: false,
+         message: '서버에서 오류가 발생했습니다.',
+         error: error.message,
+      })
+   }
 })
 
 // 메인 피드

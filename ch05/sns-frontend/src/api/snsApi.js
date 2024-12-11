@@ -89,8 +89,6 @@ export const updatePost = async (id, postData) => {
       console.error(`API 요청 오류: ${error.message}`)
       throw error
    }
-
-   // return fetchFromApi('/post', 'PUT', postData)
 }
 
 //포스트 삭제
@@ -103,5 +101,23 @@ export const deletePost = async (id) => {
       throw error
    }
 }
+
+//내 프로필 가져오기
+export const getProfile = () => {
+   return fetchFromApi(`/page/profile`, 'GET')
+}
+
+//특정 사용자 프로필 가져오기
+export const getProfileId = (id) => {
+   return fetchFromApi(`/page/profile/${id}`, 'GET')
+}
+
+//사용자를 팔로우
+export const followUser = (id) => {
+   return fetchFromApi(`/user/${id}/follow`, 'POST')
+}
+
+//특정 사용자가 쓴 모든 글 가져오기
+//사용자를 언팔로우
 
 export default snsApi

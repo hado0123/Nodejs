@@ -14,7 +14,7 @@ const PostCreatePage = () => {
       dispatch(createPostThunk(postData)) // Thunk로 데이터 전송
          .unwrap() // Thunk의 결과를 추출
          .then((response) => {
-            alert('게시물이 성공적으로 등록되었습니다!')
+            // alert('게시물이 성공적으로 등록되었습니다!')
             navigate('/')
          })
          .catch((error) => {

@@ -9,10 +9,6 @@ const Home = ({ isAuthenticated }) => {
    const dispatch = useDispatch()
    const { posts, pagination, loading, error } = useSelector((state) => state.posts)
 
-   // useEffect(() => {
-   //    dispatch(fetchPostsThunk())
-   // }, [dispatch])
-
    useEffect(() => {
       dispatch(fetchPostsThunk(page)) // 페이지 번호를 파라미터로 전송
    }, [dispatch, page])

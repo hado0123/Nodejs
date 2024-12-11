@@ -21,14 +21,16 @@ const PostItem = ({ post, isAuthenticated }) => {
          })
          .catch((error) => {
             console.error('게시물 삭제 중 오류 발생:', error)
-            alert('게시물 삭제에 실패했습니다.')
+            alert(error || '게시물 삭제에 실패했습니다.')
          })
    }
    return (
       <Card style={{ margin: '20px 0' }}>
          <CardMedia sx={{ height: 240 }} image={`${process.env.REACT_APP_API_URL}${post.img}`} title={post.content} />
          <CardContent>
-            <Typography>@{post.User.nick}</Typography>
+            <Link to={`/my/${post.User.id}`}>
+               <Typography>@{post.User.nick} </Typography>
+            </Link>
             <Typography>{post.createdAt}</Typography>
             <Typography>{post.content}</Typography>
          </CardContent>

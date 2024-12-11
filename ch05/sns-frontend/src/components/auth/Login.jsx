@@ -33,18 +33,9 @@ const Login = () => {
             </Typography>
          )}
 
-         <form onSubmit={handleLogin} autoComplete="off">
-            <TextField label="이메일" name="email" autoComplete="off" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <TextField
-               label="비밀번호"
-               type="password"
-               name="password"
-               autoComplete="new-password"
-               fullWidth
-               margin="normal"
-               value={password}
-               onChange={(e) => setPassword(e.target.value)}
-            />
+         <form onSubmit={handleLogin}>
+            <TextField label="이메일" name="email" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField label="비밀번호" type="password" name="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
 
             <Button variant="contained" color="primary" type="submit" fullWidth disabled={loading} sx={{ position: 'relative', marginTop: '20px' }}>
                {loading ? <CircularProgress size={24} sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} /> : '로그인'}

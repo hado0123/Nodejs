@@ -10,21 +10,6 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
          ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') // 각 객체의 title을 #과 함께 문자열로 변환
          : ''
    )
-   // const [isInitialSet, setIsInitialSet] = useState(false) // 초기값 설정 여부
-
-   // 최초에만 initialValues로 상태 초기화 (초기 1회만 실행)
-   // useEffect(() => {
-   //    if (!isInitialSet) {
-   //       setContent(initialValues.content || '')
-   //       setImgUrl(process.env.REACT_APP_API_URL + initialValues.img || '')
-   //       setHashtags(
-   //          Array.isArray(initialValues.Hashtags)
-   //             ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') // 각 객체의 title을 #과 함께 문자열로 변환
-   //             : ''
-   //       )
-   //       setIsInitialSet(true) // 초기값을 한번 설정했다고 표시
-   //    }
-   // }, [initialValues, isInitialSet])
 
    // 이미지 파일 선택 핸들러
    const handleImageChange = (e) => {
@@ -67,15 +52,7 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
          <TextField label="게시물 내용" variant="outlined" fullWidth multiline rows={4} value={content} onChange={(e) => setContent(e.target.value)} sx={{ mt: 2 }} />
 
          {/* 해시태그 입력 필드 */}
-         <TextField
-            label="해시태그 (쉼표로 구분)"
-            variant="outlined"
-            fullWidth
-            value={hashtags}
-            onChange={(e) => setHashtags(e.target.value)}
-            placeholder="예: 여행, 음식, 일상"
-            sx={{ mt: 2 }}
-         />
+         <TextField label="해시태그 (쉼표로 구분)" variant="outlined" fullWidth value={hashtags} onChange={(e) => setHashtags(e.target.value)} placeholder="예: 여행, 음식, 일상" sx={{ mt: 2 }} />
 
          {/* 등록 / 수정 버튼 */}
          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>

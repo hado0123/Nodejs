@@ -3,6 +3,7 @@ import Navbar from './components/shared/Navbar'
 import Home from './pages/Home'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
+import MyPage from './pages/MyPage'
 import PostCreatePage from './pages/PostCreatePage'
 import PostEditPage from './pages/PostEditPage'
 
@@ -26,6 +27,8 @@ function App() {
             <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/my" element={<MyPage />} />
+            <Route path="/my/:id" element={<MyPage />} />
             <Route path="/posts/create" element={<PostCreatePage />} />
             <Route path="/posts/edit/:id" element={<PostEditPage />} />
          </Routes>

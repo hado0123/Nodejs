@@ -3,12 +3,21 @@ import CreateIcon from '@mui/icons-material/Create'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logoutUserThunk } from '../../features/authSlice'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = ({ isAuthenticated, user }) => {
    const dispatch = useDispatch()
+   const navigate = useNavigate()
 
    const handleLogout = () => {
       dispatch(logoutUserThunk())
+         .unwrap() // Thunk의 결과를 추출
+         .then((response) => {
+            navigate('/')
+         })
+         .catch((error) => {
+            alert(error)
+         })
    }
 
    return (
@@ -27,9 +36,11 @@ const Navbar = ({ isAuthenticated, user }) => {
                         <CreateIcon />
                      </IconButton>
                   </Link>
-                  <Typography variant="body1" style={{ marginRight: '20px', color: 'black' }}>
-                     {user?.nick}님
-                  </Typography>
+                  <Link to="/my">
+                     <Typography variant="body1" style={{ marginRight: '20px', color: 'black' }}>
+                        {user?.nick}님
+                     </Typography>
+                  </Link>
                   <Button onClick={handleLogout} variant="outlined">
                      로그아웃
                   </Button>
