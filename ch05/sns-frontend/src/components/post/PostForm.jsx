@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { TextField, Button, Box } from '@mui/material'
 
 const PostForm = ({ onSubmit, initialValues = {} }) => {
-   const [content, setContent] = useState(initialValues.content || '')
-   const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '')
+   const [content, setContent] = useState(initialValues.content || '') // 게시물 내용 상태
+   const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '') // 이미지 URL
    const [imgFile, setImgFile] = useState(null) // 이미지 파일 객체
    const [hashtags, setHashtags] = useState(
       Array.isArray(initialValues.Hashtags)
@@ -12,7 +12,7 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
    )
 
    // 이미지 파일 선택 핸들러
-   const handleImageChange = (e) => {
+   const handleImageChange = useCallback((e) => {
       const file = e.target.files && e.target.files[0]
       if (!file) return // 파일이 없을 경우 함수 종료
 
@@ -22,17 +22,23 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
          setImgUrl(event.target.result) // 미리보기 URL 설정
       }
       reader.readAsDataURL(file)
-   }
+   }, []) // 의존성 배열 비우기 - handleImageChange 함수는 항상 동일하게 유지
 
    // 폼 제출 핸들러
-   const handleSubmit = (e) => {
-      e.preventDefault()
-      const formData = new FormData()
-      formData.append('content', content) // 게시물 내용 추가
-      formData.append('hashtags', hashtags) // 해시태그 추가
-      if (imgFile) formData.append('img', imgFile) // 이미지 파일 추가
-      onSubmit(formData) // FormData 객체를 그대로 전송
-   }
+   const handleSubmit = useCallback(
+      (e) => {
+         e.preventDefault()
+         const formData = new FormData()
+         formData.append('content', content) // 게시물 내용 추가
+         formData.append('hashtags', hashtags) // 해시태그 추가
+         if (imgFile) formData.append('img', imgFile) // 이미지 파일 추가
+         onSubmit(formData) // FormData 객체를 그대로 전송
+      },
+      [content, hashtags, imgFile, onSubmit]
+   ) // 필요한 의존성만 추가
+
+   // 등록/수정 버튼 라벨 메모이제이션
+   const submitButtonLabel = useMemo(() => (initialValues.id ? '수정하기' : '등록하기'), [initialValues.id])
 
    return (
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">
@@ -52,11 +58,11 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
          <TextField label="게시물 내용" variant="outlined" fullWidth multiline rows={4} value={content} onChange={(e) => setContent(e.target.value)} sx={{ mt: 2 }} />
 
          {/* 해시태그 입력 필드 */}
-         <TextField label="해시태그 (쉼표로 구분)" variant="outlined" fullWidth value={hashtags} onChange={(e) => setHashtags(e.target.value)} placeholder="예: 여행, 음식, 일상" sx={{ mt: 2 }} />
+         <TextField label="해시태그 (# 구분)" variant="outlined" fullWidth value={hashtags} onChange={(e) => setHashtags(e.target.value)} placeholder="예: #여행 #음식 #일상" sx={{ mt: 2 }} />
 
          {/* 등록 / 수정 버튼 */}
          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            {initialValues.id ? '수정하기' : '등록하기'}
+            {submitButtonLabel}
          </Button>
       </Box>
    )

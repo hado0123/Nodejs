@@ -4,21 +4,22 @@ import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logoutUserThunk } from '../../features/authSlice'
 import { useNavigate } from 'react-router-dom'
+import { useCallback } from 'react'
 
 const Navbar = ({ isAuthenticated, user }) => {
    const dispatch = useDispatch()
    const navigate = useNavigate()
 
-   const handleLogout = () => {
+   const handleLogout = useCallback(() => {
       dispatch(logoutUserThunk())
          .unwrap() // Thunk의 결과를 추출
-         .then((response) => {
-            navigate('/')
+         .then(() => {
+            navigate('/') // 로그아웃 후 메인 페이지로 이동
          })
          .catch((error) => {
             alert(error)
          })
-   }
+   }, [dispatch, navigate]) // 의존성 배열에 필요한 값 추가
 
    return (
       <AppBar position="static" style={{ backgroundColor: '#fff' }}>

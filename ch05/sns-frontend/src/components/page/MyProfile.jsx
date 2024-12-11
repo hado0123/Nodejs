@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProfileThunk, getProfileIdThunk } from '../../features/pageSlice'
@@ -18,7 +18,8 @@ const MyProfile = ({ auth }) => {
    const [followings, setFollowings] = useState(0)
    const [follow, setFollow] = useState(false)
 
-   useEffect(() => {
+   // useCallback을 사용하여 fetchProfileData 함수를 메모이제이션
+   const fetchProfileData = useCallback(() => {
       if (id) {
          dispatch(getProfileIdThunk(id)) // 다른 사람 프로필 정보
             .unwrap() // Thunk의 결과를 추출
@@ -40,19 +41,30 @@ const MyProfile = ({ auth }) => {
                alert(error)
             })
       }
-   }, [dispatch, id, follow])
+   }, [dispatch, id]) // 의존성 배열에 필요한 값 추가
 
-   const onClickFollow = (id) => {
-      dispatch(followUserThunk(id)) // Thunk로 데이터 전송
-         .unwrap() // Thunk의 결과를 추출
-         .then((response) => {
-            alert('팔로우 되었습니다!')
-            setFollow(true) // 팔로우 후 팔로워 수를 다르게 보이게 하기 위해
-         })
-         .catch((error) => {
-            alert(error)
-         })
-   }
+   useEffect(() => {
+      fetchProfileData()
+   }, [fetchProfileData, follow]) // follow가 변경될 때만 데이터를 다시 가져옴
+
+   const onClickFollow = useCallback(
+      (id) => {
+         dispatch(followUserThunk(id)) // Thunk로 데이터 전송
+            .unwrap() // Thunk의 결과를 추출
+            .then(() => {
+               alert('팔로우 되었습니다!')
+               setFollow((prev) => !prev) // 팔로우 후 팔로워 수를 다르게 보이게 하기 위해 반전
+            })
+            .catch((error) => {
+               alert(error)
+            })
+      },
+      [dispatch]
+   ) // 의존성 배열에 필요한 값 추가
+
+   const followButtonDisabled = useMemo(() => {
+      return !id || String(auth.id) === String(id) || user?.Followers?.some((f) => f.id === auth.id)
+   }, [id, auth.id, user]) // 의존성 배열에 필요한 값 추가
 
    return (
       <>
@@ -74,8 +86,7 @@ const MyProfile = ({ auth }) => {
                   <Button
                      variant="contained"
                      onClick={() => onClickFollow(`${user.id}`)}
-                     // path에 id가 없거나(내 페이지), 내 페이지가 아니거나, 이미 팔로우한 사람 이라면
-                     disabled={!id || String(auth.id) === String(id) || user.Followers.filter((f) => f.id === auth.id).length > 0 ? true : false} // id가 없으면 disabled = true
+                     disabled={followButtonDisabled} // 버튼 비활성화 조건 적용
                   >
                      Follow
                   </Button>

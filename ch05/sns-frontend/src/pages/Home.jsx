@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Container, Typography, Pagination, Stack } from '@mui/material'
 import PostItem from '../components/post/PostItem'
 import { fetchPostsThunk } from '../features/postSlice'
+import { useCallback } from 'react'
 
 const Home = ({ isAuthenticated, user }) => {
    const [page, setPage] = useState(1) // 현재 페이지
@@ -14,9 +15,9 @@ const Home = ({ isAuthenticated, user }) => {
    }, [dispatch, page])
 
    // 페이지 변경 핸들러
-   const handlePageChange = (event, value) => {
+   const handlePageChange = useCallback((event, value) => {
       setPage(value) // 페이지 상태 업데이트
-   }
+   }, []) // 의존성 배열 비우기 - setPage는 외부 종속성이 없는 경우로 가정
 
    return (
       <Container maxWidth="xs">

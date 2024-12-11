@@ -44,6 +44,7 @@ export const updatePostThunk = createAsyncThunk('posts/updatePost', async (data,
 // 비동기 Thunk 액션: 게시물 삭제
 export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, { rejectWithValue }) => {
    try {
+      // eslint-disable-next-line
       const response = await deletePost(id)
       return id // 삭제 성공 후 삭제된 게시물의 ID 반환
    } catch (error) {
