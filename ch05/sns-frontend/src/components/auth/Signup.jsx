@@ -10,7 +10,7 @@ const Signup = () => {
    const [confirmPassword, setConfirmPassword] = useState('')
    const [isSignupComplete, setIsSignupComplete] = useState(false) // 회원가입 완료 상태 추가
    const dispatch = useDispatch()
-   const { loading, error, user } = useSelector((state) => state.auth) // 유저 정보 가져오기
+   const { loading, error } = useSelector((state) => state.auth) // 유저 정보 가져오기
 
    const handleSignup = () => {
       if (!email.trim() || !nick.trim() || !password.trim() || !confirmPassword.trim()) {
@@ -71,15 +71,7 @@ const Signup = () => {
          <TextField label="이메일" variant="outlined" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
          <TextField label="사용자 이름" variant="outlined" fullWidth margin="normal" value={nick} onChange={(e) => setNick(e.target.value)} />
          <TextField label="비밀번호" variant="outlined" type="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
-         <TextField
-            label="비밀번호 확인"
-            variant="outlined"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-         />
+         <TextField label="비밀번호 확인" variant="outlined" type="password" fullWidth margin="normal" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
          <Button variant="contained" color="primary" onClick={handleSignup} fullWidth disabled={loading} style={{ marginTop: '20px' }}>
             {loading ? <CircularProgress size={24} /> : '회원가입'}
          </Button>

@@ -4,7 +4,7 @@ import { Container, Typography, Pagination, Stack } from '@mui/material'
 import PostItem from '../components/post/PostItem'
 import { fetchPostsThunk } from '../features/postSlice'
 
-const Home = ({ isAuthenticated }) => {
+const Home = ({ isAuthenticated, user }) => {
    const [page, setPage] = useState(1) // 현재 페이지
    const dispatch = useDispatch()
    const { posts, pagination, loading, error } = useSelector((state) => state.posts)
@@ -21,7 +21,7 @@ const Home = ({ isAuthenticated }) => {
    return (
       <Container maxWidth="xs">
          <Typography variant="h4" align="center" gutterBottom>
-            홈 피드
+            Home Feed
          </Typography>
 
          {loading && (
@@ -38,7 +38,7 @@ const Home = ({ isAuthenticated }) => {
          {posts.length > 0 ? (
             <>
                {posts.map((post) => (
-                  <PostItem key={post.id} post={post} isAuthenticated={isAuthenticated} />
+                  <PostItem key={post.id} post={post} isAuthenticated={isAuthenticated} user={user} />
                ))}
                <Stack spacing={2} sx={{ mt: 3, alignItems: 'center' }}>
                   <Pagination

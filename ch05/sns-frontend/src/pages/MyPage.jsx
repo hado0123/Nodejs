@@ -4,7 +4,7 @@ import MyProfile from '../components/page/MyProfile'
 const MyPage = () => {
    return (
       <Container maxWidth="md">
-         <h1>마이피드</h1>
+         <h1>MyFeed</h1>
          <MyProfile />
       </Container>
    )

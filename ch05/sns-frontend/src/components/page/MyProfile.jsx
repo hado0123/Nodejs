@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography'
 const MyProfile = () => {
    const { id } = useParams()
    const dispatch = useDispatch()
-   const { user, loading, error } = useSelector((state) => state.page)
+   const { user } = useSelector((state) => state.page)
    const [followers, setFollowers] = useState(0)
    const [followings, setFollowings] = useState(0)
    const [follow, setFollow] = useState(false)
@@ -74,7 +74,7 @@ const MyProfile = () => {
                   <Button
                      variant="contained"
                      onClick={() => onClickFollow(`${user.id}`)}
-                     disabled={!id} // id가 없으면 disabled = true
+                     disabled={!id || String(user.id) === String(id) ? true : false} // id가 없으면 disabled = true
                   >
                      Follow
                   </Button>

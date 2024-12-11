@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deletePostThunk } from '../../features/postSlice'
+import dayjs from 'dayjs'
 
-const PostItem = ({ post, isAuthenticated }) => {
+const PostItem = ({ post, isAuthenticated, user }) => {
    const navigate = useNavigate()
    const dispatch = useDispatch()
 
@@ -28,17 +29,18 @@ const PostItem = ({ post, isAuthenticated }) => {
       <Card style={{ margin: '20px 0' }}>
          <CardMedia sx={{ height: 240 }} image={`${process.env.REACT_APP_API_URL}${post.img}`} title={post.content} />
          <CardContent>
-            <Link to={`/my/${post.User.id}`}>
-               <Typography>@{post.User.nick} </Typography>
+            <Link to={`/my/${post.User.id}`} style={{ textDecoration: 'none' }}>
+               <Typography sx={{ color: 'primary.main' }}>@{post.User.nick} </Typography>
             </Link>
-            <Typography>{post.createdAt}</Typography>
+            <Typography>{dayjs(post.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Typography>
             <Typography>{post.content}</Typography>
          </CardContent>
          <CardActions>
             <Button size="small" color="primary">
                <FavoriteBorderIcon fontSize="small" />
             </Button>
-            {isAuthenticated && (
+            {/* isAuthenticated가 true 이면서 post.User.id와 user.id가 같을때 렌더링 => 내가 작성한 게시글만 수정, 삭제 */}
+            {isAuthenticated && post.User.id === user.id && (
                <Box sx={{ p: 2 }}>
                   <Link to={`/posts/edit/${post.id}`}>
                      <IconButton aria-label="edit" size="small">

@@ -11,6 +11,8 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkAuthStatusThunk } from './features/authSlice'
 
+import './styles/common.css'
+
 function App() {
    const dispatch = useDispatch()
    const { isAuthenticated, user } = useSelector((state) => state.auth) // 로그인 상태 가져오기
@@ -24,7 +26,7 @@ function App() {
       <>
          <Navbar isAuthenticated={isAuthenticated} user={user} />
          <Routes>
-            <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated} user={user} />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/my" element={<MyPage />} />

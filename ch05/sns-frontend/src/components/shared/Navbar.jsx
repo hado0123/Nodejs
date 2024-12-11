@@ -36,7 +36,7 @@ const Navbar = ({ isAuthenticated, user }) => {
                         <CreateIcon />
                      </IconButton>
                   </Link>
-                  <Link to="/my">
+                  <Link to="/my" style={{ textDecoration: 'none' }}>
                      <Typography variant="body1" style={{ marginRight: '20px', color: 'black' }}>
                         {user?.nick}님
                      </Typography>
