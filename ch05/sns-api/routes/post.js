@@ -241,6 +241,11 @@ router.get('/:id', async (req, res) => {
 
 // 전체 게시물 리스트 불러오기 라우터 (페이징 추가 가능)
 router.get('/', async (req, res) => {
+   /*
+   10을 붙이는 이유: 10진수로 변환
+   parseInt('08') // 일부 브라우저에서는 NaN 반환 (오래된 JS 버전)
+   parseInt('08', 10) // 8 반환 (정확한 10진수로 해석)
+   */
    const page = parseInt(req.query.page, 10) || 1 // page 번호 받기 (기본값: 1)
    const limit = parseInt(req.query.limit, 10) || 3 // 한페이지 당 나타날 레코드 갯수인 limit 받기 (기본값: 3)
    const offset = (page - 1) * limit // 오프셋 계산
