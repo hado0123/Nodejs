@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProfileThunk, getProfileIdThunk } from '../../features/pageSlice'
@@ -60,11 +60,7 @@ const MyProfile = ({ auth }) => {
             })
       },
       [dispatch]
-   ) // 의존성 배열에 필요한 값 추가
-
-   const followButtonDisabled = useMemo(() => {
-      return !id || String(auth.id) === String(id) || user?.Followers?.some((f) => f.id === auth.id)
-   }, [id, auth.id, user]) // 의존성 배열에 필요한 값 추가
+   )
 
    return (
       <>
@@ -86,7 +82,7 @@ const MyProfile = ({ auth }) => {
                   <Button
                      variant="contained"
                      onClick={() => onClickFollow(`${user.id}`)}
-                     disabled={followButtonDisabled} // 버튼 비활성화 조건 적용
+                     disabled={!id || String(auth.id) === String(id) || user.Followers.filter((f) => f.id === auth.id).length > 0 ? true : false} // 버튼 비활성화 조건 적용
                   >
                      Follow
                   </Button>

@@ -39,16 +39,10 @@ app.use(
    cors({
       origin: 'http://localhost:3000', // 특정 출처만 허용
       credentials: true, // 쿠키, 인증 정보 허용
-      optionsSuccessStatus: 204,
-      maxAge: 86400, // 24시간 동안 캐시
    })
 )
 app.use(morgan('dev')) // HTTP 요청 로깅 (dev 모드)
-app.use(
-   express.static(path.join(__dirname, 'uploads'), {
-      maxAge: '30d', // 30일 동안 캐싱
-   })
-) // 정적 파일 제공
+app.use(express.static(path.join(__dirname, 'uploads'))) // 정적 파일 제공
 app.use(express.json()) // JSON 데이터 파싱
 app.use(express.urlencoded({ extended: false })) // URL-encoded 데이터 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET)) // 쿠키 파싱 및 서명

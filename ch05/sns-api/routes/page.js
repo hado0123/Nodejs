@@ -5,13 +5,13 @@ const { Post, User, Hashtag } = require('../models')
 const router = express.Router()
 
 // 사용자 정보 및 팔로우 관련 데이터 설정
-router.use((req, res, next) => {
-   res.locals.user = req.user
-   res.locals.followerCount = req.user ? req.user.Followers.length : 0
-   res.locals.followingCount = req.user ? req.user.Followings.length : 0
-   res.locals.followerIdList = req.user ? req.user.Followings.map((f) => f.id) : []
-   next()
-})
+// router.use((req, res, next) => {
+//    res.locals.user = req.user
+//    res.locals.followerCount = req.user ? req.user.Followers.length : 0
+//    res.locals.followingCount = req.user ? req.user.Followings.length : 0
+//    res.locals.followerIdList = req.user ? req.user.Followings.map((f) => f.id) : []
+//    next()
+// })
 
 // 내 프로필 조회
 router.get('/profile', isLoggedIn, (req, res) => {
@@ -37,7 +37,7 @@ router.get('/profile/:id', isLoggedIn, async (req, res) => {
             },
             {
                model: User,
-               as: 'Followings', // 내가 팔로우하는 사람들
+               as: 'Followings', // 내가 팔로잉하는 사람들
                attributes: ['id', 'nick', 'email'], // 팔로잉의 기본 정보만 반환
             },
          ],
@@ -75,28 +75,28 @@ router.get('/profile/:id', isLoggedIn, async (req, res) => {
 })
 
 // 메인 피드
-router.get('/', async (req, res, next) => {
-   try {
-      const posts = await Post.findAll({
-         include: {
-            model: User,
-            attributes: ['id', 'nick'],
-         },
-         order: [['createdAt', 'DESC']],
-      })
-      res.json({
-         success: true,
-         posts,
-      })
-   } catch (err) {
-      console.error(err)
-      res.status(500).json({
-         success: false,
-         message: '게시물을 가져오는 중 오류가 발생했습니다.',
-         error: err,
-      })
-   }
-})
+// router.get('/', async (req, res, next) => {
+//    try {
+//       const posts = await Post.findAll({
+//          include: {
+//             model: User,
+//             attributes: ['id', 'nick'],
+//          },
+//          order: [['createdAt', 'DESC']],
+//       })
+//       res.json({
+//          success: true,
+//          posts,
+//       })
+//    } catch (err) {
+//       console.error(err)
+//       res.status(500).json({
+//          success: false,
+//          message: '게시물을 가져오는 중 오류가 발생했습니다.',
+//          error: err,
+//       })
+//    }
+// })
 
 // 해시태그 검색
 router.get('/hashtag', async (req, res, next) => {
