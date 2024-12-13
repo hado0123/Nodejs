@@ -80,10 +80,14 @@ app.use((req, res, next) => {
 
 // 에러 처리 미들웨어
 app.use((err, req, res, next) => {
-   res.locals.message = err.message // 에러 메시지
-   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {} // 개발 환경에서만 에러 출력
-   res.status(err.status || 500) // 상태 코드 설정
-   // res.render('error') // 에러 페이지 렌더링
+   const statusCode = err.status || 500 // 상태 코드 설정
+   const errorMessage = err.message || 'Internal Server Error' // 에러 메시지 설정
+
+   res.status(statusCode).json({
+      success: false,
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? err : {}, // 개발 환경에서만 에러 정보 출력
+   })
 })
 
 app.options('*', cors()) // 모든 경로에 대한 OPTIONS 요청을 허용합니다.
