@@ -51,7 +51,7 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
          const result = await Promise.all(
             hashtags.map((tag) =>
                Hashtag.findOrCreate({
-                  where: { title: tag.slice(1) }, // 해시태그 소문자 변환 후 저장
+                  where: { title: tag.slice(1) },
                })
             )
          )
@@ -97,7 +97,7 @@ router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
          const result = await Promise.all(
             hashtags.map((tag) =>
                Hashtag.findOrCreate({
-                  where: { title: tag.slice(1).toLowerCase() }, // 해시태그 소문자 변환 후 저장
+                  where: { title: tag.slice(1) },
                })
             )
          )

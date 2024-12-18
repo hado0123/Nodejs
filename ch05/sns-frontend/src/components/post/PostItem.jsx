@@ -22,7 +22,7 @@ const PostItem = ({ post, isAuthenticated, user }) => {
             })
             .catch((error) => {
                console.error('게시물 삭제 중 오류 발생:', error)
-               alert(error || '게시물 삭제에 실패했습니다.')
+               alert('게시물 삭제에 실패했습니다.', erorr)
             })
       },
       [dispatch, navigate]

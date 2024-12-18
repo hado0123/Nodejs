@@ -5,7 +5,7 @@ import { registerUser, loginUser, logoutUser, checkAuthStatus } from '../api/sns
 rejectWithValue: 비동기 작업(예: API 요청)에서 에러 메시지나 에러 데이터를 함께 반환할 때 사용
 기본적으로 createAsyncThunk의 rejected 상태는 error.message와 같이 단순한 에러 메시지만 반환하는데, rejectWithValue를 사용하면 에러에 더 구체적인 정보를 담을 수 있음
 
-?. (Optional Chaining)
+?. (Optional Chaining): 값이 undefined 이거나 null일때 에러를 반환하지 않고 그냥 undefined를 반환
 const error = { response: undefined }
 console.log(error.response.data.message) // TypeError 발생! (Cannot read property 'data' of undefined)
 console.log(error.response?.data?.message) // undefined 반환, 에러 없음

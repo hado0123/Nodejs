@@ -28,10 +28,30 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
    const handleSubmit = useCallback(
       (e) => {
          e.preventDefault()
-         const formData = new FormData()
+
+         // 콘텐츠와 해시태그가 비어 있는지 확인
+         if (!content.trim()) {
+            alert('콘텐츠를 입력해주세요.')
+            return
+         }
+
+         if (!hashtags.trim()) {
+            alert('해시태그를 입력해주세요.')
+            return
+         }
+
+         //이미지 not null로 바꾸기!
+         // 이미지 파일이 선택되지 않았는지 확인
+         if (!imgFile) {
+            alert('이미지 파일을 추가해주세요.')
+            return
+         }
+
+         const formData = new FormData() // 폼 데이터를 쉽게 생성하고 전송할 수 있도록 하는 객체
          formData.append('content', content) // 게시물 내용 추가
          formData.append('hashtags', hashtags) // 해시태그 추가
-         if (imgFile) formData.append('img', imgFile) // 이미지 파일 추가
+         formData.append('img', imgFile) // 이미지 파일 추가
+
          onSubmit(formData) // FormData 객체를 그대로 전송
       },
       [content, hashtags, imgFile, onSubmit]
