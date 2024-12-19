@@ -82,6 +82,7 @@ const MyProfile = ({ auth }) => {
                   <Button
                      variant="contained"
                      onClick={() => onClickFollow(`${user.id}`)}
+                     // 내 페이지 이거나(메뉴바에서 이름을 클릭한 경우) || 로그인한 사람의 id와 페이지 path parameter의 id가 같거나(게시물에서 이름을 클릭한 경우) || 이미 팔로우를 한 경우
                      disabled={!id || String(auth.id) === String(id) || user.Followers.filter((f) => f.id === auth.id).length > 0 ? true : false} // 버튼 비활성화 조건 적용
                   >
                      Follow
